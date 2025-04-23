@@ -45,10 +45,7 @@ def ssim(frame1: np.ndarray, frame2: np.ndarray) -> float:
                       data_range=frame2.max() - frame2.min(),
                       multichannel=(frame1.ndim == 3)))
 
-
-def histogram_diff(frame1: np.ndarray,
-                           frame2: np.ndarray,
-                           bins: int = 256) -> float:
+def histogram_diff(frame1: np.ndarray,frame2: np.ndarray, bins: int = 256) -> float:
     """
     Compute the L1 distance between normalized grayscale histograms of two frames.
     """
@@ -61,7 +58,6 @@ def histogram_diff(frame1: np.ndarray,
 
     return float(np.sum(np.abs(h1 - h2)))
 
-
 def wasserstein(frame1: np.ndarray, frame2: np.ndarray) -> float:
     """
     Compute the 1D Earth Mover’s Distance (Wasserstein distance)
@@ -71,3 +67,39 @@ def wasserstein(frame1: np.ndarray, frame2: np.ndarray) -> float:
     arr2 = to_gray(frame2).ravel()
 
     return float(wasserstein_distance(arr1, arr2))
+
+def correlation(frame1: np.ndarray, frame2: np.ndarray) -> float:
+    """
+    Compute the Pearson correlation coefficient between two frames.
+    """
+
+    # Flatten to 1D float arrays
+    v1 = frame1.astype(np.float32).ravel()
+    v2 = frame2.astype(np.float32).ravel()
+
+    # Subtract means
+    v1_mean = v1 - v1.mean()
+    v2_mean = v2 - v2.mean()
+
+    # Compute Pearson r
+    numerator = np.sum(v1_mean * v2_mean)
+    denom = np.sqrt(np.sum(v1_mean**2) * np.sum(v2_mean**2))
+    if denom == 0:
+        return 0.0
+    return float(numerator / denom)
+
+def cosine(frame1: np.ndarray, frame2: np.ndarray) -> float:
+    """
+    Compute the cosine similarity between two frames.
+    """
+    # Flatten to 1D float arrays
+    v1 = frame1.astype(np.float32).ravel()
+    v2 = frame2.astype(np.float32).ravel()
+
+    # Compute dot product and norms
+    dot = np.dot(v1, v2)
+    norm1 = np.linalg.norm(v1)
+    norm2 = np.linalg.norm(v2)
+    if norm1 == 0 or norm2 == 0:
+        return 0.0
+    return float(dot / (norm1 * norm2))
