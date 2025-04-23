@@ -36,9 +36,6 @@ def ssim(frame1: np.ndarray, frame2: np.ndarray) -> float:
     """
     Compute the Structural Similarity Index (SSIM) between two image frames.
     """
-    if frame1.shape != frame2.shape:
-        raise ValueError(f"Shape mismatch: {frame1.shape} vs {frame2.shape}")
-
     # For multichannel (color) images, set multichannel=True
     return float(structural_similarity(frame1,
                       frame2,
